@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-30T00:00:00Z",
+  "title": "Design System: Operator Profile",
+  "extensions": {
+    "colorMeta": {
+      "yellow": { "role": "primary", "displayName": "Signal Yellow", "canonical": "oklch(89.7% 0.158 103)", "tonalRamp": ["oklch(25% 0.05 103)", "oklch(38% 0.08 103)", "oklch(50% 0.11 103)", "oklch(62% 0.13 103)", "oklch(74% 0.15 103)", "oklch(89.7% 0.158 103)", "oklch(94% 0.12 103)", "oklch(97% 0.06 103)"] },
+      "teal": { "role": "secondary", "displayName": "Signal Teal", "canonical": "oklch(82% 0.14 184)", "tonalRamp": ["oklch(25% 0.05 184)", "oklch(38% 0.07 184)", "oklch(50% 0.09 184)", "oklch(62% 0.11 184)", "oklch(72% 0.13 184)", "oklch(82% 0.14 184)", "oklch(90% 0.09 184)", "oklch(96% 0.04 184)"] },
+      "red": { "role": "tertiary", "displayName": "Glitch Red", "canonical": "oklch(64% 0.22 12)", "tonalRamp": ["oklch(25% 0.08 12)", "oklch(36% 0.12 12)", "oklch(46% 0.16 12)", "oklch(55% 0.2 12)", "oklch(64% 0.22 12)", "oklch(74% 0.18 12)", "oklch(85% 0.11 12)", "oklch(95% 0.04 12)"] },
+      "dark": { "role": "neutral", "displayName": "Operator Ink", "canonical": "oklch(13% 0.02 260)", "tonalRamp": ["oklch(8% 0.02 260)", "oklch(13% 0.02 260)", "oklch(20% 0.02 260)", "oklch(30% 0.02 260)", "oklch(45% 0.015 260)", "oklch(62% 0.01 260)", "oklch(80% 0.008 260)", "oklch(93% 0.005 260)"] },
+      "text-primary": { "role": "neutral", "displayName": "HUD White", "canonical": "oklch(93% 0.005 270)", "tonalRamp": ["oklch(20% 0.005 270)", "oklch(32% 0.005 270)", "oklch(45% 0.005 270)", "oklch(58% 0.005 270)", "oklch(70% 0.005 270)", "oklch(82% 0.005 270)", "oklch(93% 0.005 270)", "oklch(98% 0.003 270)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero name only. Orbitron 900, set huge and tight. Carries the glitch layers." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles, with teal accent spans on emphasis words." },
+      "title": { "displayName": "Title", "purpose": "Project card titles and stat values." },
+      "body": { "displayName": "Body", "purpose": "Rajdhani paragraphs; strong lifts to HUD White, em shifts to teal." },
+      "label": { "displayName": "Label", "purpose": "Share Tech Mono, uppercase, tracked. Every code-like element, nav, badge, eyebrow. Carries // and > prefixes." }
+    },
+    "shadows": [
+      { "name": "status-glow", "value": "0 0 8px #00e5c8", "purpose": "Neon bloom on the pulsing status dot. The only sanctioned box-shadow; never used as elevation." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Default easing for transitions, entrances, and reveals. The strong custom curve that gives motion punch." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "On-screen movement and morphing." },
+      { "name": "press", "value": "transform: scale(0.97); duration ~100ms", "purpose": "Press feedback on all pressable elements." },
+      { "name": "glitch-name", "value": "~6s infinite loop", "purpose": "Hero name signal-tear glitch (3 layers: yellow base + teal + red channels)." },
+      { "name": "cursor-lerp", "value": "ring lags dot via 0.12 interpolation", "purpose": "Lagging cursor ring; both GPU transform-driven." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "900px" },
+      { "name": "phone", "value": "600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid yellow CTA with the signature angled clip-path cut. Lead action.",
+      "html": "<button class=\"ds-btn-primary\">VIEW WORK</button>",
+      "css": ".ds-btn-primary { font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; padding: 14px 32px; background: #f5e642; color: #0a0c14; border: none; cursor: pointer; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); transition: background 0.2s, transform 0.15s cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { background: #fff7a0; transform: translateY(-2px); } .ds-btn-primary:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Transparent secondary action with glass border; hover shifts to teal.",
+      "html": "<button class=\"ds-btn-ghost\">GET IN TOUCH</button>",
+      "css": ".ds-btn-ghost { font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; padding: 13px 31px; background: transparent; color: #e8eaf0; border: 1px solid rgba(245,230,66,0.4); cursor: pointer; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); backdrop-filter: blur(8px); transition: border-color 0.2s, color 0.2s, transform 0.15s cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-ghost:hover { border-color: #00e5c8; color: #00e5c8; transform: translateY(-2px); } .ds-btn-ghost:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }"
+    },
+    {
+      "name": "Glass Panel",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "Sharp-cornered glass card over the atmosphere stack: yellow top-edge highlight, hover lift, L-shaped corner accent.",
+      "html": "<div class=\"ds-card\"><span class=\"ds-card-corner\"></span><div class=\"ds-card-type\">FEATURED · UI DESIGN</div><div class=\"ds-card-title\">Project Zero</div><p class=\"ds-card-desc\">The one you lead with. The one that makes people stop scrolling.</p></div>",
+      "css": ".ds-card { position: relative; overflow: hidden; padding: 28px; background: rgba(8,14,28,0.55); border: 1px solid rgba(245,230,66,0.18); backdrop-filter: blur(20px); color: #e8eaf0; transition: border-color 0.3s cubic-bezier(0.23,1,0.32,1), transform 0.45s cubic-bezier(0.23,1,0.32,1); } .ds-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #f5e642, transparent); opacity: 0.5; } .ds-card:hover { border-color: rgba(245,230,66,0.4); transform: translateY(-4px); } .ds-card-corner { position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-top: 2px solid #f5e642; border-right: 2px solid #f5e642; opacity: 0; transition: opacity 0.3s; } .ds-card:hover .ds-card-corner { opacity: 1; } .ds-card-type { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #00e5c8; text-transform: uppercase; margin-bottom: 12px; } .ds-card-title { font-family: 'Orbitron', monospace; font-size: 18px; font-weight: 700; margin-bottom: 8px; } .ds-card-desc { font-family: 'Rajdhani', sans-serif; font-size: 14px; line-height: 1.6; color: rgba(232,234,240,0.5); }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Mono uppercase status/skill tag; active variant turns teal.",
+      "html": "<span class=\"ds-badge ds-badge-active\">▶ AVAILABLE FOR WORK</span> <span class=\"ds-badge\">UI / UX</span>",
+      "css": ".ds-badge { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 5px 14px; border: 1px solid rgba(245,230,66,0.18); color: rgba(232,234,240,0.5); background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); } .ds-badge-active { border-color: #00e5c8; color: #00e5c8; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Lowercase mono nav link; hover lifts to HUD White and reveals a teal > prefix.",
+      "html": "<a class=\"ds-nav-link\" href=\"#work\">work</a>",
+      "css": ".ds-nav-link { font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: rgba(232,234,240,0.5); text-decoration: none; text-transform: lowercase; transition: color 0.2s; } .ds-nav-link::before { content: '> '; color: #00e5c8; opacity: 0; transition: opacity 0.2s; } .ds-nav-link:hover { color: #e8eaf0; } .ds-nav-link:hover::before { opacity: 1; }"
+    },
+    {
+      "name": "Status Indicator",
+      "kind": "custom",
+      "refersTo": "nav",
+      "description": "Pulsing teal dot with neon glow plus a mono status readout. The signature 'alive' element.",
+      "html": "<div class=\"ds-status\"><span class=\"ds-status-dot\"></span><span class=\"ds-status-text\">ONLINE // ANKARA</span></div>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #00e5c8; } .ds-status-dot { width: 6px; height: 6px; border-radius: 50%; background: #00e5c8; box-shadow: 0 0 8px #00e5c8; animation: ds-pulse 2s ease-in-out infinite; } @keyframes ds-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Operator Terminal",
+    "overview": "This is not a portfolio that happens to look cyberpunk. It is a Night City netrunner's heads-up display that happens to be a portfolio. Every surface behaves like a panel in an operator's interface: glass readouts floating over a live video feed, status tickers cycling, section labels prefixed with // like console output, and the hero name glitching as if the signal can't quite hold it steady. The interface is diegetic; the visitor isn't reading a resume, they're jacked into someone's profile. The mood is electric, defiant, cinematic. Depth comes from a dark, near-black field lit by two neon signals: an aggressive electric yellow and a colder teal. Atmosphere is structural, never decorative. Red exists only as a wound: glitch interference and danger, nothing else. This system rejects corporate/LinkedIn-bland, the generic SaaS template, and the all-white minimalist portfolio. Loud is the brand; the only constraint is legibility.",
+    "keyCharacteristics": [
+      "Diegetic terminal/HUD framing: // labels, system readouts, status tickers",
+      "Near-black canvas with twin neon accents (yellow primary, teal secondary)",
+      "Glass panels over a live video background; sharp angled geometry, never rounded",
+      "Motion as identity: glitch, scanlines, grain, lagging cursor, scroll reveals",
+      "Orbitron display set huge and tight; mono for every label and code-like element"
+    ],
+    "rules": [
+      { "name": "The Two-Signal Rule", "body": "Yellow leads, teal answers, and they never swap jobs: yellow is the thing you act on, teal is the thing that's alive (status, links, motion).", "section": "colors" },
+      { "name": "The Gray-Is-Banned Rule", "body": "There is no flat gray. Muted text is always HUD White at reduced opacity, so it stays tinted to the canvas.", "section": "colors" },
+      { "name": "The Red-Is-A-Wound Rule", "body": "Red is danger and interference only, used exclusively in the glitch effect's red channel. Never for normal UI, text, or accents.", "section": "colors" },
+      { "name": "The Console-Label Rule", "body": "Every label, nav item, tag, badge, and section eyebrow is Share Tech Mono, uppercase, tracked, most with a // or > prefix. The deliberate terminal voice, applied consistently.", "section": "typography" },
+      { "name": "The Display-Is-For-Shouting Rule", "body": "Orbitron is reserved for the hero name, section titles, and numeric stat values. Never set body copy in Orbitron.", "section": "typography" },
+      { "name": "The No-Drop-Shadow Rule", "body": "Surfaces never cast soft gray drop shadows. Depth comes from backdrop-filter blur, the top-edge yellow highlight, and layered atmosphere behind glass.", "section": "elevation" },
+      { "name": "The Ghost-Card Ban", "body": "Never pair a 1px border with a wide soft box-shadow on the same element. Panels get a glass border OR a glow, never a lifted-card shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep every label, nav item, tag, and section eyebrow in Share Tech Mono, uppercase, with // or > prefixes. The terminal voice is the brand.",
+      "Do use the angled clip-path cut on buttons (polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)). The diagonal corner is intentional.",
+      "Do build depth with backdrop-filter glass, the top-edge yellow highlight, and the layered video/scanline/grain/vignette stack, never drop shadows.",
+      "Do use yellow as the action color and teal as the alive/status color (The Two-Signal Rule).",
+      "Do render muted text as HUD White at reduced opacity, never a flat gray (The Gray-Is-Banned Rule).",
+      "Do preserve the scanlines, film grain, vignette, custom cursor, glitch name, and video background. They are structural identity.",
+      "Do use --ease-out: cubic-bezier(0.23, 1, 0.32, 1) for transitions and add scale(0.97) press feedback to every pressable element."
+    ],
+    "donts": [
+      "Don't drift toward corporate / LinkedIn-bland: no beige, no safe, no personality-free layouts. The single worst failure mode.",
+      "Don't introduce the generic SaaS/startup look: no Inter, no soft purple gradients, no rounded cards, no modern-minimal defaults.",
+      "Don't build the all-white minimalist designer portfolio: thin gray type on white with no point of view is forbidden.",
+      "Don't round corners on cards, panels, or buttons. Geometry is sharp; only the cursor, dots, and rings are circular.",
+      "Don't use Glitch Red for anything except the glitch effect's red channel. Red is a wound, not an accent.",
+      "Don't pair a 1px border with a wide soft box-shadow (the ghost-card pattern), and don't add generic lifted-card drop shadows.",
+      "Don't set body copy or long strings in Orbitron; reserve the display face for the hero name, section titles, and stat numbers.",
+      "Don't let spectacle bury the message: the name, role, work, and contact path must stay instantly legible under all the motion."
+    ]
+  }
+}

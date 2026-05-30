@@ -1,0 +1,9 @@
+# Tooling / skill installs (not part of the site)
+.agents/
+.claude/
+skills-lock.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
