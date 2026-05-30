@@ -1068,10 +1068,10 @@ document.documentElement.classList.add('js');</script>
       audio.currentTime = 6;                 // reset in case it drifted before entry
       audio.play().then(() => {
         let vol = 0;
-        const fade = setInterval(() => {     // ramp 0 -> 1 over ~1.2s
-          vol = Math.min(vol + 0.04, 1);
+        const fade = setInterval(() => {     // ramp 0 -> 0.7 over ~0.9s
+          vol = Math.min(vol + 0.04, 0.7);
           audio.volume = vol;
-          if (vol >= 1) clearInterval(fade);
+          if (vol >= 0.7) clearInterval(fade);
         }, 50);
       }).catch(e => console.log('[soundtrack] blocked:', e));
     }
@@ -1103,7 +1103,7 @@ document.documentElement.classList.add('js');</script>
       };
       btn.addEventListener('click', () => {
         audioStarted = true;                        // entry already unlocked playback
-        if (audio.paused) { audio.volume = 1; audio.play().catch(() => {}); }
+        if (audio.paused) { audio.volume = 0.7; audio.play().catch(() => {}); }
         else audio.pause();
       });
       // keep the button visuals honest by syncing off the element's own events
