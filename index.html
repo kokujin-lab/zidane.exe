@@ -19,7 +19,7 @@
     --glass-border: rgba(245, 230, 66, 0.18);
     --glass-border-strong: rgba(245, 230, 66, 0.4);
     --text-primary: #e8eaf0;
-    --text-muted: rgba(232, 234, 240, 0.5);
+    --text-muted: rgba(232, 234, 240, 0.7);
     --font-mono: 'Share Tech Mono', monospace;
     --font-display: 'Orbitron', monospace;
     --font-body: 'Rajdhani', sans-serif;
@@ -124,7 +124,7 @@
   .nav-logo span { color: var(--text-muted); }
   .nav-links { display: flex; gap: 32px; list-style: none; }
   .nav-links a {
-    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.1em;
     color: var(--text-muted); text-decoration: none; text-transform: lowercase;
     transition: color 0.2s;
     position: relative;
@@ -145,6 +145,31 @@
     0%,100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.7); }
   }
+  .music-btn {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+    padding: 8px 16px; margin-left: 6px;
+    background: transparent; color: var(--yellow);
+    border: 1px solid var(--glass-border-strong); cursor: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    text-transform: lowercase;
+    display: inline-flex; align-items: center; gap: 8px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s var(--ease-out);
+  }
+  .music-btn .music-icon { font-size: 10px; line-height: 1; display: inline-block; }
+  /* icon swap reads as a signal error: hard opacity flashes + horizontal jitter + red flash */
+  .music-icon.icon-glitch { animation: icon-glitch 0.3s steps(1, end) both; }
+  @keyframes icon-glitch {
+    0%   { opacity: 0; transform: translateX(-3px); color: var(--red); }
+    20%  { opacity: 1; transform: translateX(3px);  color: var(--red); }
+    40%  { opacity: 0; transform: translateX(-2px); color: var(--yellow); }
+    60%  { opacity: 1; transform: translateX(2px);  color: var(--red); }
+    80%  { opacity: 0; transform: translateX(-1px); color: var(--yellow); }
+    100% { opacity: 1; transform: translateX(0);    color: var(--yellow); }
+  }
+  .music-btn:hover { border-color: var(--yellow); background: rgba(245,230,66,0.1); }
+  .music-btn:active { transform: scale(0.97); transition-duration: 0.1s; }
+  .music-btn.playing { color: #0a0c14; background: var(--yellow); border-color: var(--yellow); }
 
   /* ── SECTIONS ── */
   section { position: relative; z-index: 2; }
@@ -216,7 +241,7 @@
     93% { opacity: 0; }
   }
   .hero-tagline {
-    font-family: var(--font-body); font-size: clamp(18px, 2.5vw, 26px);
+    font-family: var(--font-body); font-size: clamp(20px, 2.5vw, 26px);
     font-weight: 500; color: var(--text-muted);
     margin-top: 16px; letter-spacing: 0.05em;
     opacity: 0;
@@ -252,14 +277,33 @@
   .btn-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
   .btn-ghost:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
 
+  /* live status ticker — looks like a ghost button, but it's a readout, not a control */
+  .btn-status {
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.12em;
+    padding: 13px 31px;
+    background: var(--glass-bg); color: var(--teal);
+    border: 1px solid var(--glass-border-strong);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    backdrop-filter: blur(8px);
+    display: inline-flex; align-items: center;
+    cursor: none; user-select: none; pointer-events: none;
+    overflow: hidden;
+  }
+  .btn-status-text {
+    display: inline-block; white-space: nowrap;
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), filter 0.3s var(--ease-out);
+  }
+  /* flicker out, swap text mid-transition, flicker back in */
+  .btn-status-text.switching { opacity: 0; transform: translateX(-6px); filter: blur(2px); }
+
   .hero-badges {
     display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap;
     opacity: 0;
     animation: fade-up 0.8s var(--ease-out) forwards 1.3s;
   }
   .badge {
-    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
-    padding: 5px 14px; border: 1px solid var(--glass-border);
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em;
+    padding: 7px 16px; border: 1px solid var(--glass-border);
     color: var(--text-muted); background: rgba(0,0,0,0.3);
     backdrop-filter: blur(8px);
   }
@@ -286,9 +330,9 @@
     background: linear-gradient(90deg, transparent, var(--yellow), transparent);
     opacity: 0.5;
   }
-  .stat-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-  .stat-value { font-family: var(--font-display); font-size: 22px; color: var(--yellow); font-weight: 700; margin-top: 2px; }
-  .stat-sub { font-family: var(--font-mono); font-size: 10px; color: var(--teal); margin-top: 2px; }
+  .stat-label { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .stat-value { font-family: var(--font-display); font-size: 26px; color: var(--yellow); font-weight: 700; margin-top: 2px; }
+  .stat-sub { font-family: var(--font-mono); font-size: 13px; color: var(--teal); margin-top: 2px; }
 
   /* scroll indicator */
   .scroll-hint {
@@ -329,7 +373,7 @@
   }
   .about-heading .accent { color: var(--teal); }
   .about-body {
-    font-size: 17px; line-height: 1.7; color: var(--text-muted);
+    font-size: 18px; line-height: 1.8; color: var(--text-muted);
     font-weight: 400;
   }
   .about-body strong { color: var(--text-primary); font-weight: 600; }
@@ -354,9 +398,9 @@
     transition: transform 0.3s ease;
   }
   .skill-item:hover::after { transform: scaleX(1); }
-  .skill-icon { font-size: 20px; margin-bottom: 8px; }
-  .skill-name { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); letter-spacing: 0.05em; }
-  .skill-desc { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+  .skill-icon { font-size: 26px; margin-bottom: 8px; }
+  .skill-name { font-family: var(--font-mono); font-size: 15px; color: var(--text-primary); letter-spacing: 0.05em; }
+  .skill-desc { font-size: 15px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
   /* about right: glass portrait card */
   .about-card {
@@ -420,8 +464,8 @@
     background: rgba(8,14,28,0.7);
     padding: 10px 14px;
   }
-  .char-stat-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-  .char-stat-val { font-family: var(--font-display); font-size: 14px; color: var(--yellow); margin-top: 2px; }
+  .char-stat-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .char-stat-val { font-family: var(--font-display); font-size: 17px; color: var(--yellow); margin-top: 2px; }
 
   /* ── WORK ── */
   #work { padding: 100px 48px; }
@@ -472,10 +516,10 @@
   .project-card:hover .corner-accent { opacity: 1; }
   .project-type { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; color: var(--teal); text-transform: uppercase; margin-bottom: 12px; }
   .project-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-  .project-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+  .project-desc { font-size: 18px; color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; }
   .project-tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .project-tag {
-    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
     padding: 3px 10px; border: 1px solid var(--glass-border); color: var(--text-muted);
   }
   .project-card:nth-child(1) { grid-column: span 2; }
@@ -497,7 +541,7 @@
     font-weight: 900; line-height: 1.0; color: var(--text-primary); margin-bottom: 20px;
   }
   .contact-heading .yellow { color: var(--yellow); }
-  .contact-sub { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-bottom: 40px; }
+  .contact-sub { font-size: 18px; color: var(--text-muted); line-height: 1.8; margin-bottom: 40px; }
   .contact-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
   .contact-link {
     font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
@@ -602,7 +646,9 @@
   @media (max-width: 600px) {
     nav { padding: 14px 18px; }
     .nav-links { gap: 16px; }
-    .nav-status { display: none; }
+    /* keep the audio toggle reachable on phones; drop only the status readout */
+    .nav-status .status-dot, .nav-status .text-glitch { display: none; }
+    .music-btn { margin-left: 0; }
 
     #hero { padding: 96px 18px 56px; }
     .hero-cta { flex-direction: column; align-items: stretch; }
@@ -659,6 +705,9 @@ document.documentElement.classList.add('js');</script>
   <div class="nav-status">
     <div class="status-dot"></div>
     <span class="text-glitch">ONLINE // ANKARA</span>
+    <button class="music-btn" id="music-toggle" type="button" aria-label="Play soundtrack" aria-pressed="false" title="Play soundtrack">
+      <span class="music-icon">▶</span> audio
+    </button>
   </div>
 </nav>
 
@@ -675,7 +724,8 @@ document.documentElement.classList.add('js');</script>
     currently: surviving the <em>night city</em> of freelance life.
   </p>
   <div class="hero-cta">
-    <button class="btn-primary" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">view work</button>
+    <!-- <button class="btn-primary" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">view work</button> -->
+    <div class="btn-status" id="now-ticker" aria-live="polite"><span class="btn-status-text">// currently working on • Project 77</span></div>
     <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">get in touch</button>
   </div>
   <div class="hero-badges">
@@ -877,6 +927,11 @@ document.documentElement.classList.add('js');</script>
   <div class="footer-sys">SYS_STATUS: <span style="color: var(--teal);">NOMINAL</span> // BUILT WITH CHAOS</div>
 </footer>
 
+<!-- audio must precede the script below so getElementById('soundtrack') resolves at run time -->
+<audio id="soundtrack" loop preload="auto">
+  <source src="03__Who_s_Ready_for_Tomorrow.mp3" type="audio/mpeg">
+</audio>
+
 <script>
   // cursor — transform-only (GPU, no per-frame layout); ring lags via lerp
   const cursor = document.getElementById('cursor');
@@ -920,6 +975,90 @@ document.documentElement.classList.add('js');</script>
   const phrases = ['ONLINE // ANKARA', 'AVAILABLE', 'FREELANCE OPEN', '☻ ALIVE'];
   let pi = 0;
   setInterval(() => { pi = (pi+1) % phrases.length; statusText.textContent = phrases[pi]; }, 3000);
+
+  // "now" ticker — deterministic from the clock so everyone sees the same status
+  // at the same wall-clock time; rotates every 2.5h. Flicker-swaps on boundary.
+  (() => {
+    const el = document.querySelector('.btn-status-text');
+    if (!el) return;
+    const STATUSES = [
+      '// currently playing • Overwatch',
+      '// currently listening • Fred Again',
+      '// currently working on • Project 77',
+    ];
+    const PERIOD = 2.5 * 60 * 60 * 1000; // 2.5 hours
+    const indexNow = () => Math.floor(Date.now() / PERIOD) % STATUSES.length;
+    let shown = -1;
+    const render = (i, animate) => {
+      if (i === shown) return;
+      shown = i;
+      if (!animate) { el.textContent = STATUSES[i]; return; }
+      el.classList.add('switching');           // flicker out
+      setTimeout(() => {
+        el.textContent = STATUSES[i];           // swap mid-transition
+        el.classList.remove('switching');       // flicker back in
+      }, 150);
+    };
+    render(indexNow(), false);
+    // fire exactly on the next 2.5h boundary, then keep cadence
+    (function schedule() {
+      const msUntilNext = PERIOD - (Date.now() % PERIOD);
+      setTimeout(() => { render(indexNow(), true); schedule(); }, msUntilNext + 50);
+    })();
+  })();
+
+  // soundtrack — silent until the first click or scroll, then fades in from 0:06
+  (() => {
+    const audio = document.getElementById('soundtrack');
+    audio.volume = 0;
+    audio.currentTime = 6;
+    let audioStarted = false;
+
+    function startAudio() {
+      if (audioStarted) return;
+      audioStarted = true;
+      document.removeEventListener('click', startAudio);
+      document.removeEventListener('scroll', startAudio);
+      audio.play().then(() => {
+        let vol = 0;
+        const fade = setInterval(() => {
+          vol = Math.min(vol + 0.05, 1);
+          audio.volume = vol;
+          if (vol >= 1) clearInterval(fade);
+        }, 60);
+      }).catch(e => console.log('[soundtrack] blocked:', e));
+    }
+
+    document.addEventListener('click', startAudio);
+    document.addEventListener('scroll', startAudio);
+
+    // play/pause toggle — claims control from the auto-start path so the two can't fight
+    const btn = document.getElementById('music-toggle');
+    if (btn) {
+      const icon = btn.querySelector('.music-icon');
+      btn.addEventListener('click', () => {
+        // take ownership before this click bubbles to the document startAudio listener
+        audioStarted = true;
+        document.removeEventListener('click', startAudio);
+        document.removeEventListener('scroll', startAudio);
+        if (audio.paused) { audio.volume = 1; audio.play().catch(() => {}); }
+        else audio.pause();
+      });
+      // keep the button visuals honest by syncing off the element's own events
+      audio.addEventListener('play', () => {
+        btn.classList.add('playing');
+        if (icon) icon.textContent = '❚❚';
+        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('aria-label', 'Pause soundtrack');
+      });
+      audio.addEventListener('pause', () => {
+        btn.classList.remove('playing');
+        if (icon) icon.textContent = '▶';
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('aria-label', 'Play soundtrack');
+      });
+    }
+  })();
 </script>
 </body>
 </html>
