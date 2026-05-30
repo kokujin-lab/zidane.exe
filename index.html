@@ -158,13 +158,13 @@
   }
   .music-btn .music-icon { font-size: 10px; line-height: 1; display: inline-block; }
   /* icon swap reads as a signal error: hard opacity flashes + horizontal jitter + red flash */
-  .music-icon.icon-glitch { animation: icon-glitch 0.3s steps(1, end) both; }
+  .music-btn.icon-glitch .music-icon { animation: icon-glitch 0.3s steps(1, end) both; }
   @keyframes icon-glitch {
-    0%   { opacity: 0; transform: translateX(-3px); color: var(--red); }
-    20%  { opacity: 1; transform: translateX(3px);  color: var(--red); }
-    40%  { opacity: 0; transform: translateX(-2px); color: var(--yellow); }
-    60%  { opacity: 1; transform: translateX(2px);  color: var(--red); }
-    80%  { opacity: 0; transform: translateX(-1px); color: var(--yellow); }
+    0%   { opacity: 1; transform: translateX(0);    color: var(--yellow); }
+    20%  { opacity: 0; transform: translateX(-4px); color: var(--red); }
+    40%  { opacity: 1; transform: translateX(3px);  color: var(--red); }
+    60%  { opacity: 0; transform: translateX(-2px); color: var(--yellow); }
+    80%  { opacity: 1; transform: translateX(1px); }
     100% { opacity: 1; transform: translateX(0);    color: var(--yellow); }
   }
   .music-btn:hover { border-color: var(--yellow); background: rgba(245,230,66,0.1); }
@@ -176,9 +176,10 @@
 
   /* ── HERO ── */
   #hero {
+    position: relative;
     min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 120px 48px 80px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 120px 48px 64px;
   }
   .hero-eyebrow {
     font-family: var(--font-mono); font-size: 12px;
@@ -276,6 +277,46 @@
   }
   .btn-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
   .btn-ghost:active { transform: translateY(0) scale(0.97); transition-duration: 0.1s; }
+
+  /* entry overlay — click-to-enter gate that also unlocks audio playback */
+  #entry-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 28px;
+    background: rgba(5, 8, 16, 0.96);
+    backdrop-filter: blur(8px);
+    cursor: none;
+    opacity: 1;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  #entry-overlay.closing { opacity: 0; }
+  .entry-logo {
+    position: relative; display: inline-block;
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2.5rem, 7vw, 4.5rem); letter-spacing: -0.02em;
+    color: var(--yellow);
+    animation: glitch-name 6s infinite 2s;
+  }
+  .entry-logo::before, .entry-logo::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  }
+  .entry-logo::before {
+    color: var(--teal);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    transform: translate(-3px, 0);
+    animation: glitch-clip-1 6s infinite 2s;
+  }
+  .entry-logo::after {
+    color: var(--red);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    transform: translate(3px, 0);
+    animation: glitch-clip-2 6s infinite 2s;
+  }
+  .entry-hint {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
+    color: var(--text-muted); text-transform: lowercase;
+  }
 
   /* live status ticker — looks like a ghost button, but it's a readout, not a control */
   .btn-status {
@@ -694,6 +735,13 @@ document.documentElement.classList.add('js');</script>
 <div id="vignette"></div>
 <div id="grain"></div>
 
+<!-- ENTRY OVERLAY -->
+<div id="entry-overlay">
+  <div class="entry-logo" data-text="ZIDANE.EXE">ZIDANE.EXE</div>
+  <button class="btn-primary" id="entry-btn" type="button">// ENTER</button>
+  <span class="entry-hint">[ click to enter + enable audio ]</span>
+</div>
+
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">// <span>zidane</span>.exe</a>
@@ -1007,26 +1055,20 @@ document.documentElement.classList.add('js');</script>
     })();
   })();
 
-  // soundtrack — silent until the first scroll/click/touch, then fades in from 0:06
+  // soundtrack — gated behind the click-to-enter overlay, which unlocks playback
   (() => {
     const audio = document.getElementById('soundtrack');
     audio.volume = 0;
     audio.currentTime = 6;
     let audioStarted = false;
 
-    function startAudio(e) {
+    function startAudio() {
       if (audioStarted) return;
       audioStarted = true;
-
-      // Remove all listeners immediately so nothing double-fires
-      window.removeEventListener('scroll', startAudio, { passive: true });
-      window.removeEventListener('click', startAudio);
-      window.removeEventListener('touchstart', startAudio, { passive: true });
-
-      audio.currentTime = 6;
+      audio.currentTime = 6;                 // reset in case it drifted before entry
       audio.play().then(() => {
         let vol = 0;
-        const fade = setInterval(() => {
+        const fade = setInterval(() => {     // ramp 0 -> 1 over ~1.2s
           vol = Math.min(vol + 0.04, 1);
           audio.volume = vol;
           if (vol >= 1) clearInterval(fade);
@@ -1034,34 +1076,46 @@ document.documentElement.classList.add('js');</script>
       }).catch(e => console.log('[soundtrack] blocked:', e));
     }
 
-    // Listen on window not document, passive for scroll performance
-    window.addEventListener('scroll', startAudio, { passive: true });
-    window.addEventListener('click', startAudio);
-    window.addEventListener('touchstart', startAudio, { passive: true });
+    // ENTRY OVERLAY: the one and only first-interaction gate. A genuine click here is a
+    // trusted gesture, so Chrome lets the audio play. Fades out over 0.5s, then hides.
+    const overlay = document.getElementById('entry-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        startAudio();
+        overlay.classList.add('closing');           // opacity 1 -> 0 over 0.5s
+        setTimeout(() => { overlay.style.display = 'none'; }, 500);
+      }, { once: true });
+    }
 
-    // play/pause toggle — completely separate; works before or after auto-start fires
+    // play/pause toggle — completely separate; works normally after entry
     const btn = document.getElementById('music-toggle');
     if (btn) {
       const icon = btn.querySelector('.music-icon');
+      // swap the glyph behind a 0.3s "signal error" glitch on the button, every toggle
+      let glitchT;
+      const setIcon = (glyph) => {
+        btn.classList.remove('icon-glitch');
+        void btn.offsetWidth;                       // reflow so the animation re-fires each time
+        if (icon) icon.textContent = glyph;
+        btn.classList.add('icon-glitch');
+        clearTimeout(glitchT);
+        glitchT = setTimeout(() => btn.classList.remove('icon-glitch'), 300);
+      };
       btn.addEventListener('click', () => {
-        // claim control before this click bubbles to the window startAudio listener
-        audioStarted = true;
-        window.removeEventListener('scroll', startAudio, { passive: true });
-        window.removeEventListener('click', startAudio);
-        window.removeEventListener('touchstart', startAudio, { passive: true });
+        audioStarted = true;                        // entry already unlocked playback
         if (audio.paused) { audio.volume = 1; audio.play().catch(() => {}); }
         else audio.pause();
       });
       // keep the button visuals honest by syncing off the element's own events
       audio.addEventListener('play', () => {
         btn.classList.add('playing');
-        if (icon) icon.textContent = '❚❚';
+        setIcon('❚❚');
         btn.setAttribute('aria-pressed', 'true');
         btn.setAttribute('aria-label', 'Pause soundtrack');
       });
       audio.addEventListener('pause', () => {
         btn.classList.remove('playing');
-        if (icon) icon.textContent = '▶';
+        setIcon('▶');
         btn.setAttribute('aria-pressed', 'false');
         btn.setAttribute('aria-label', 'Play soundtrack');
       });
