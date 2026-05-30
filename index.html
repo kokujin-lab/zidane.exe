@@ -1007,40 +1007,48 @@ document.documentElement.classList.add('js');</script>
     })();
   })();
 
-  // soundtrack — silent until the first click or scroll, then fades in from 0:06
+  // soundtrack — silent until the first scroll/click/touch, then fades in from 0:06
   (() => {
     const audio = document.getElementById('soundtrack');
     audio.volume = 0;
     audio.currentTime = 6;
     let audioStarted = false;
 
-    function startAudio() {
+    function startAudio(e) {
       if (audioStarted) return;
       audioStarted = true;
-      document.removeEventListener('click', startAudio);
-      document.removeEventListener('scroll', startAudio);
+
+      // Remove all listeners immediately so nothing double-fires
+      window.removeEventListener('scroll', startAudio, { passive: true });
+      window.removeEventListener('click', startAudio);
+      window.removeEventListener('touchstart', startAudio, { passive: true });
+
+      audio.currentTime = 6;
       audio.play().then(() => {
         let vol = 0;
         const fade = setInterval(() => {
-          vol = Math.min(vol + 0.05, 1);
+          vol = Math.min(vol + 0.04, 1);
           audio.volume = vol;
           if (vol >= 1) clearInterval(fade);
-        }, 60);
+        }, 50);
       }).catch(e => console.log('[soundtrack] blocked:', e));
     }
 
-    document.addEventListener('click', startAudio);
-    document.addEventListener('scroll', startAudio);
+    // Listen on window not document, passive for scroll performance
+    window.addEventListener('scroll', startAudio, { passive: true });
+    window.addEventListener('click', startAudio);
+    window.addEventListener('touchstart', startAudio, { passive: true });
 
-    // play/pause toggle — claims control from the auto-start path so the two can't fight
+    // play/pause toggle — completely separate; works before or after auto-start fires
     const btn = document.getElementById('music-toggle');
     if (btn) {
       const icon = btn.querySelector('.music-icon');
       btn.addEventListener('click', () => {
-        // take ownership before this click bubbles to the document startAudio listener
+        // claim control before this click bubbles to the window startAudio listener
         audioStarted = true;
-        document.removeEventListener('click', startAudio);
-        document.removeEventListener('scroll', startAudio);
+        window.removeEventListener('scroll', startAudio, { passive: true });
+        window.removeEventListener('click', startAudio);
+        window.removeEventListener('touchstart', startAudio, { passive: true });
         if (audio.paused) { audio.volume = 1; audio.play().catch(() => {}); }
         else audio.pause();
       });
