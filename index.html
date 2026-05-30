@@ -1103,7 +1103,7 @@ document.documentElement.classList.add('js');</script>
       };
       btn.addEventListener('click', () => {
         audioStarted = true;                        // entry already unlocked playback
-        if (audio.paused) { audio.volume = 0.7; audio.play().catch(() => {}); }
+        if (audio.paused) { audio.currentTime = 6; audio.volume = 0.7; audio.play().catch(() => {}); }
         else audio.pause();
       });
       // keep the button visuals honest by syncing off the element's own events
@@ -1120,6 +1120,13 @@ document.documentElement.classList.add('js');</script>
         btn.setAttribute('aria-label', 'Play soundtrack');
       });
     }
+
+    // loop guard: when the track loops back to 0, snap straight to the 6s mark
+    audio.addEventListener('timeupdate', () => {
+      if (audio.currentTime < 6) {
+        audio.currentTime = 6;
+      }
+    });
   })();
 </script>
 </body>
